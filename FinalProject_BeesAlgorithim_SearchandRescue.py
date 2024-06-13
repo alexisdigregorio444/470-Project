@@ -1,5 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from vpython import sphere, vector, rate, color, canvas
+# Create the simulation canvas
+scene = canvas(title='UAV search', width=1000, height=1000, center=vector(0, 0, 0), background=color.black)
 
 # Define grid size and initialize the grid
 grid_size = 30
@@ -13,6 +16,9 @@ target_x, target_y = np.random.randint(0, grid_size, size=2)
 truth_grid[target_x, target_y] = 1
 
 print(f"Target located at: ({target_x}, {target_y})")
+
+UAV = sphere(pos=vector(target_x, target_y, 0), radius=0.1, color=color.red)
+
 
 # Display the truth grid matrix
 # print("Truth Grid Matrix:")
@@ -107,28 +113,39 @@ else:
 # Plot the entire path taken by the UAV that finds the person
 if found_uav is not None:
     path_x, path_y = zip(*uav_locations[found_uav])
-    plt.figure(figsize=(8, 8), facecolor='white')  # Set the size and facecolor of the figure
+    # plt.figure(figsize=(8, 8), facecolor='white')  # Set the size and facecolor of the figure
     
-    # Plot the grid
-    #plt.imshow(grid, cmap='gray', origin='lower', extent=[0, grid_size, 0, grid_size], vmin=0, vmax=1)
+    # # Plot the grid
+    # #plt.imshow(grid, cmap='gray', origin='lower', extent=[0, grid_size, 0, grid_size], vmin=0, vmax=1)
     
-    # Plot the path taken by the UAV
-    plt.plot(path_y, path_x, marker='o', linestyle='-', color='b')
+    # # Plot the path taken by the UAV
+    # plt.plot(path_y, path_x, marker='o', linestyle='-', color='b')
+
+
+    # plt.plot(target_y, target_x, marker='x', color='r', markersize=10, label='Target')
+    # start_x, start_y = uav_locations[found_uav][0]
+    # plt.plot(start_y, start_x, marker='s', color='g', markersize=10, label='Start')
     
+    # plt.title(f"Path taken by UAV {found_uav} to find the person")
+    # plt.xlabel("Column")
+    # plt.ylabel("Row")
+    # plt.xlim(0, grid_size)  # Set x-axis limit from 0 to grid_size
+    # plt.ylim(0, grid_size)  # Set y-axis limit from 0 to grid_size
+    # plt.gca().set_aspect('equal', adjustable='box')  # Set equal aspect ratio
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
+
+    # Create the Sun and Earth
+    UAV = sphere(pos=vector(path_x[0], path_y[1], 0), radius=0.1, color=color.red)
+    scene.camera.pos = vector(path_x[0], path_y[1], 0)  # Adjust the z-coordinate for a better view
+    scene.camera.axis = vector(path_x[0], path_y[1], -1) - scene.camera.po
+
     # Plot the target and starting location
-    plt.plot(target_y, target_x, marker='x', color='r', markersize=10, label='Target')
-    start_x, start_y = uav_locations[found_uav][0]
-    plt.plot(start_y, start_x, marker='s', color='g', markersize=10, label='Start')
-    
-    plt.title(f"Path taken by UAV {found_uav} to find the person")
-    plt.xlabel("Column")
-    plt.ylabel("Row")
-    plt.xlim(0, grid_size)  # Set x-axis limit from 0 to grid_size
-    plt.ylim(0, grid_size)  # Set y-axis limit from 0 to grid_size
-    plt.gca().set_aspect('equal', adjustable='box')  # Set equal aspect ratio
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    for i in range(len(path_x)):
+        rate(100)
+        UAV = vector(path_x[i], path_y[i],0)
+   
 
 
 # Plot only the last few steps taken by the UAV that finds the person with a zoomed-in view
@@ -159,3 +176,19 @@ if found_uav is not None:
     plt.show()
 
 
+
+
+
+
+# earththeta= 0
+# moontheta = 0
+# while 1: 
+#     rate(100)
+
+#     earththeta += 0.001*2*np.pi
+#     earth.pos = vector(orbti_radius*np.cos(earththeta), orbti_radius*np.sin(earththeta),0)
+
+#     moontheta += 0.01*2*np.pi
+#     moon.pos = earth.pos + vector(np.cos(moontheta), np.sin(moontheta),0)
+
+# print("done")
